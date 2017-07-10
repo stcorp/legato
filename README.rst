@@ -14,6 +14,7 @@ transition from note to note with no intervening silence.
 Installation instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 To be able to use legato, you will need:
+
   - A Unix-based operating system (e.g. Linux).
   - Python version 2.7 or higher.
 
