@@ -15,8 +15,8 @@ Installation instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 To be able to use legato, you will need:
 
-  - A Unix-based operating system (e.g. Linux).
-  - Python version 2.7 or higher.
+- A Unix-based operating system (e.g. Linux).
+- Python version 2.7 or higher.
 
 Legato is distributed as a source distribution. It can be installed in several
 ways, for example, using pip or by invoking setup.py manually.
