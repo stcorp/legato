@@ -12,7 +12,7 @@ transition from note to note with no intervening silence.
 
 
 Installation instructions
-=========================
+~~~~~~~~~~~~~~~~~~~~~~~~~
 To be able to use legato, you will need:
   - A Unix-based operating system (e.g. Linux).
   - Python version 2.7 or higher.
@@ -34,10 +34,11 @@ Using setup.py: ::
 
 
 Using legato
-============
+~~~~~~~~~~~~
 
 Start command
 -------------
+::
 
   $ legato configuration_file.yaml
 
@@ -58,10 +59,11 @@ The task configuration is defined by:
   "every 30 seconds"
 
 - ``events``: Applies when the type is set to ``file``. It is a list with file
- events that should be used to trigger on. Supported events are ``modify`` and
- ``create``. Optionally it can be complemented with ``unlocked`` (only in Linux
- and macOS). If this attribute is specified the event will only happen when the
- file is unlocked (for more information about locking files see manual flock(1))
+  events that should be used to trigger on. Supported events are ``modify``
+  and ``create``. Optionally it can be complemented with ``unlocked`` (only on
+  Linux and macOS). If this attribute is specified the event will only happen
+  when the file is unlocked (for more information about locking files see the
+  manual page of flock(1))
 
 - ``path``: Applies when the type is set to ``file``. It describes the
   directory to monitor
