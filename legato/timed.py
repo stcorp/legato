@@ -68,7 +68,7 @@ def parse_interval(parts, scheduler):
 
             return getattr(scheduler.every(n), unit), parts
         except (AssertionError, ValueError) as e:
-            raise AssertionError("Expected a number followed by a unit or one of [%s]", "|".join(_intervals))
+            raise AssertionError("expected a number followed by a unit or one of [%s] (%s)" % ("|".join(_intervals), e))
 
 
 def parse_optional_at(parts, interval):
