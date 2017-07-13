@@ -34,7 +34,9 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
     class Handler(RegexMatchingEventHandler):
         @staticmethod
         def run_task(event_path):
-            run_task(job_name, env={"FILENAME": event_path}, **kwargs)
+            environment = os.environ
+            environment["FILENAME"] = event_path
+            run_task(job_name, env=environment, **kwargs)
 
         def on_any_event(self, event):
             if "unlocked" in events:

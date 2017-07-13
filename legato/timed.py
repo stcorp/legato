@@ -1,6 +1,7 @@
 import threading
 import time
 import math
+import os
 from datetime import datetime
 
 from legato.registry import register
@@ -29,7 +30,8 @@ class Timer(threading.Thread):
     def run(self):
         while self.running:
             self._schedule.run_pending()
-            time.sleep(self._schedule.idle_seconds)
+            if self._schedule.next_run is not None:
+                time.sleep(self._schedule.idle_seconds)
 
 
 def start():
@@ -100,4 +102,6 @@ def timed_trigger(job_name, when, **kwargs):
     parts = when.split(" ")
     assert len(parts) > 0, "Invalid time spec %s" % when
     clock = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
-    parse_when(when, _schedule).do(run_task, job_name, env={"DATETIME": clock}, **kwargs)
+    environment = os.environ
+    environment["DATETIME"] = clock
+    parse_when(when, _schedule).do(run_task, job_name, env=environment, **kwargs)
