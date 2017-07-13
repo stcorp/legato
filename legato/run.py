@@ -14,11 +14,11 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
             clock = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             logger.info("{1} - Executing {0}".format(job_name, clock))
             if run_shell is True:
-                subprocess.check_call(what, shell=True, executable='/bin/bash', env=env)
+                subprocess.check_call(what, shell=True, executable='/bin/sh', env=env)
             else:
                 what = what.split()
                 program = what[0]
-                subprocess.check_call(what, shell=False, executable=program, env=env)
+                subprocess.check_call(whalet, shell=False, executable=program, env=env)
         except (AssertionError, subprocess.CalledProcessError) as e:
             logger.error("Failure running %s: %s" % (job_name, str(e)))
 
