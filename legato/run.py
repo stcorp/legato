@@ -37,9 +37,10 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
         else:
             function_name = python
         elements = re.split('[()]', function_name)[:-1]
-        arguments = ''
+        arguments = []
         if len(elements) > 1:
-            arguments = elements[1].split(',')
+            if elements[1] is not '':
+                arguments = elements[1].split(',')
         function_name = elements[0]
 
         module_import = import_module(module_name)
