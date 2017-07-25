@@ -21,6 +21,5 @@ setup(
     install_requires=[
         "watchdog",
         "schedule"
-    ],
-    py_modules=["legato"]
+    ]
 )
