@@ -1,7 +1,8 @@
 import subprocess
 import re
 import logging
-import thread
+import multiprocessing
+import os
 from importlib import import_module
 from datetime import datetime
 
@@ -45,4 +46,6 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
 
         module_import = import_module(module_name)
         python_function = getattr(module_import, function_name)
-        thread.start_new_thread(python_function, tuple(arguments))
+        os.environ = env
+        process = multiprocessing.Process(target=python_function, args=arguments)
+        process.start()
