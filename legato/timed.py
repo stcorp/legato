@@ -20,7 +20,6 @@ class Timer(threading.Thread):
 
     def __init__(self, schedule):
         super(Timer, self).__init__()
-
         self._schedule = schedule
         self.running = True
 

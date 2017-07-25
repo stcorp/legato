@@ -14,18 +14,18 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
             clock = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             logger.info("{1} - Executing {0}".format(job_name, clock))
             if run_shell is True:
-                subprocess.check_call(what, shell=True, executable='/bin/sh', env=env)
+                subprocess.Popen(what, shell=True, executable='/bin/sh', env=env)
             else:
                 what = what.split()
                 program = what[0]
-                subprocess.check_call(whalet, shell=False, executable=program, env=env)
+                subprocess.Popen(what, shell=False, executable=program, env=env)
         except (AssertionError, subprocess.CalledProcessError) as e:
             logger.error("Failure running %s: %s" % (job_name, str(e)))
 
     if shell is not None:
-        thread.start_new_thread(run_parallel_task, (shell, True))
+        run_parallel_task(shell, True)
     if cmd is not None:
-        thread.start_new_thread(run_parallel_task, (cmd, False))
+        run_parallel_task(cmd, False)
     if python is not None:
         assert isinstance(python, basestring)
         elements = python.split('.')

@@ -41,9 +41,9 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
         def on_any_event(self, event):
             if "unlocked" in events:
                 try:
-                    file = open(event.src_path, 'r')
-                    fcntl.flock(file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                    file.close()
+                    lock_file = open(event.src_path, 'r')
+                    fcntl.flock(lock_file, fcntl.LOCK_EX)
+                    lock_file.close()
                 except IOError:
                     return
             if event.event_type is EVENT_TYPE_CREATED:
