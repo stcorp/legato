@@ -31,6 +31,8 @@ class Timer(threading.Thread):
             self._schedule.run_pending()
             if self._schedule.next_run is not None:
                 time.sleep(self._schedule.idle_seconds)
+            else:
+                time.sleep(60)
 
 
 def start():
