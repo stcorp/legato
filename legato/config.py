@@ -1,4 +1,5 @@
 import yaml
+import os
 
 
 def read_configuration_file(configuration_file):
