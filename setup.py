@@ -15,7 +15,7 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "legato = legato.daemon:main",
+            "legato = legato.main:main",
         ],
     },
     install_requires=[

@@ -1,6 +1,5 @@
 import threading
 import time
-import math
 import os
 from datetime import datetime
 
