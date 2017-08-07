@@ -134,6 +134,16 @@ Example configuration file
 
    echo_python:
      type: time
-     when: every 30 seconds
-     python: legato.demo.print_something("This is something")
+     when: every 3 seconds
+     python: legato.demo.echo
+     arguments:
+        text_one: 'Hello'
+        text_two: 'World'
+
+   echo_helloworld_python:
+     type: time
+     when: every 5 seconds
+     python: legato.demo.echo_helloworld
+
+
 

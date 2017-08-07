@@ -1,5 +1,4 @@
 import subprocess
-import re
 import logging
 import multiprocessing
 import os
@@ -28,24 +27,17 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
     if cmd is not None:
         run_parallel_task(cmd, False)
     if python is not None:
-        assert isinstance(python, basestring)
         elements = python.split('.')
         module_name = ''
-        function_name = ''
         if len(elements) > 1:
             function_name = elements[-1]
             module_name = '.'.join(elements[:-1])
         else:
             function_name = python
-        elements = re.split('[()]', function_name)[:-1]
-        arguments = []
-        if len(elements) > 1:
-            if elements[1] is not '':
-                arguments = elements[1].split(',')
-        function_name = elements[0]
 
         module_import = import_module(module_name)
         python_function = getattr(module_import, function_name)
         os.environ = env
-        process = multiprocessing.Process(target=python_function, args=arguments)
+        arguments = kwargs.pop('arguments', '')
+        process = multiprocessing.Process(target=python_function, kwargs=arguments)
         process.start()
