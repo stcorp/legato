@@ -1,3 +1,4 @@
+* Added --list to return a list of available tasks
 * Change format to call python task
 * Added support to run tasks manually
 
