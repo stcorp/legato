@@ -101,7 +101,4 @@ def parse_when(when, scheduler):
 def timed_trigger(job_name, when, **kwargs):
     parts = when.split(" ")
     assert len(parts) > 0, "Invalid time spec %s" % when
-    clock = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
-    environment = os.environ
-    environment["DATETIME"] = clock
-    parse_when(when, _schedule).do(run_task, job_name, env=environment, **kwargs)
+    parse_when(when, _schedule).do(run_task, job_name, **kwargs)

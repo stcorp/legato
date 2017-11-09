@@ -22,6 +22,9 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
         except (AssertionError, subprocess.CalledProcessError) as e:
             logger.error("Failure running %s: %s" % (job_name, str(e)))
 
+    clock = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+    env["DATETIME"] = clock
+
     if shell is not None:
         run_parallel_task(shell, True)
     if cmd is not None:
