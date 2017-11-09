@@ -23,10 +23,7 @@ def run(args):
 
     # Set environment
     environment = os.environ
-    if task['type'] == 'time':
-        clock = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
-        environment["DATETIME"] = clock
-    elif task['type'] == 'file':
+    if task['type'] == 'file':
         environment["FILENAME"] = args.filename
 
     run_task(args.task, env=environment, **task)
