@@ -14,6 +14,8 @@ _schedule = schedule.Scheduler()
 logging.getLogger('schedule').propagate = False
 logging.getLogger('schedule').addHandler(logging.NullHandler())
 
+logger = logging.getLogger(__name__)
+
 
 class Timer(threading.Thread):
 
@@ -27,11 +29,14 @@ class Timer(threading.Thread):
 
     def run(self):
         while self.running:
-            self._schedule.run_pending()
-            if self._schedule.next_run is not None:
-                time.sleep(self._schedule.idle_seconds)
-            else:
-                time.sleep(60)
+            try:
+                self._schedule.run_pending()
+                if self._schedule.next_run is not None:
+                    time.sleep(self._schedule.idle_seconds)
+                else:
+                    time.sleep(60)
+            except Exception as e:
+                logger.warning(e)
 
 
 def start():

@@ -38,9 +38,12 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
         else:
             function_name = python
 
-        module_import = import_module(module_name)
-        python_function = getattr(module_import, function_name)
-        os.environ = env
-        arguments = kwargs.pop('arguments', '')
-        process = multiprocessing.Process(target=python_function, kwargs=arguments)
-        process.start()
+        try:
+            module_import = import_module(module_name)
+            python_function = getattr(module_import, function_name)
+            os.environ = env
+            arguments = kwargs.pop('arguments', '')
+            process = multiprocessing.Process(target=python_function, kwargs=arguments)
+            process.start()
+        except Exception as e:
+            logger.error(e)
