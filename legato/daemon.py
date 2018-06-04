@@ -67,7 +67,12 @@ def main(args):
 def restart():
     print('Restarting due to change in configuration files')
     registry.stop()
-    os.execvp("legato", sys.argv)
+    registry.join()
+    try:
+        os.execvp("legato", sys.argv)
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
 
 def shutdown(*args, **kwargs):
