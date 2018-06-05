@@ -3,8 +3,8 @@ import os
 
 
 def read_configuration_file(configuration_file):
-    list_of_files = list()
-    list_of_files.append(configuration_file)
+    list_of_paths = list()
+    list_of_paths.append(configuration_file)
 
     with open(configuration_file, 'r') as fh:
         configuration = yaml.load(fh.read())
@@ -17,18 +17,19 @@ def read_configuration_file(configuration_file):
         if 'include' in config:
             include = config['include']
             if os.path.isfile(include):
-                extra_configuration, extra_files = read_configuration_file(include)
+                extra_configuration, extra_paths = read_configuration_file(include)
                 if extra_configuration is not None:
                     configuration.update(extra_configuration)
-                list_of_files += extra_files
+                list_of_paths += extra_paths
             elif os.path.isdir(include):
+                list_of_paths += [include]
                 for file_in_dir in os.listdir(include):
                     filename = os.path.join(include, file_in_dir)
-                    extra_configuration, extra_files = read_configuration_file(filename)
+                    extra_configuration, extra_paths = read_configuration_file(filename)
                     if extra_configuration is not None:
                         configuration.update(extra_configuration)
-                    list_of_files += extra_files
+                    list_of_paths += extra_paths
             else:
                 raise IOError
 
-    return configuration, list_of_files
+    return configuration, list_of_paths

@@ -22,19 +22,19 @@ class Timer(threading.Thread):
     def __init__(self, schedule):
         super(Timer, self).__init__()
         self._schedule = schedule
-        self.running = True
+        self.finished = threading.Event()
 
     def stop(self):
-        self.running = False
+        self.finished.set()
 
     def run(self):
-        while self.running:
+        while not self.finished.is_set():
             try:
                 self._schedule.run_pending()
                 if self._schedule.next_run is not None:
-                    time.sleep(self._schedule.idle_seconds)
+                    self.finished.wait(self._schedule.idle_seconds)
                 else:
-                    time.sleep(60)
+                    self.finished.wait(60)
             except Exception as e:
                 logger.warning(e)
 
@@ -53,6 +53,7 @@ def stop(thread):
 
 def join(thread):
     thread.join()
+
 
 _intervals = ["second", "minute", "hour", "day", "week", "monday",
               "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]

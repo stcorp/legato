@@ -1,6 +1,17 @@
-* Added --list to return a list of available tasks
-* Change format to call python task
-* Added support to run tasks manually
+* Added --list to return a list of available tasks.
+
+* Changed format to call python task.
+
+* Added support to run tasks manually.
+
+* Resolved issue where legato was not restarting immediately when a
+  configuration file change was detected.
+
+* Resolved issue where legato would perform a restart if any file in the same
+  directory as the main legato config file got added/changed.
+
+* Legato will now also automatically restart if a new config file gets added
+  into one of the included directories.
 
 1.0 2017-07-10
 ~~~~~~~~~~~~~~

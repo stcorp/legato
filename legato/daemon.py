@@ -15,26 +15,31 @@ import legato.timed
 import legato.filesystem
 
 
-class MonitorConfigFiles(RegexMatchingEventHandler):
+class MonitorConfigFiles(PatternMatchingEventHandler):
     def on_any_event(self, event):
-        if event.event_type is EVENT_TYPE_CREATED or event.event_type is EVENT_TYPE_MODIFIED:
-            restart()
+        restart()
 
 
 def run(args):
     # Read the configuration
-    config_file, list_of_files = read_configuration_file(args.config_file)
+    configuration, list_of_paths = read_configuration_file(args.config_file)
     # Monitor configuration files
     observer = Observer()
-    for file_to_monitor in list_of_files:
-        handler = MonitorConfigFiles(os.path.realpath(file_to_monitor))
-        path = os.path.dirname(os.path.realpath(file_to_monitor))
+    for path_to_monitor in list_of_paths:
+        if os.path.isdir(path_to_monitor):
+            # create monitor for any change in the directory
+            handler = MonitorConfigFiles()
+            path = os.path.realpath(path_to_monitor)
+        else:
+            # create monitor on directory with specific pattern for config file
+            handler = MonitorConfigFiles([os.path.realpath(path_to_monitor)])
+            path = os.path.dirname(os.path.realpath(path_to_monitor))
         observer.schedule(handler, path, recursive=False)
     observer.start()
 
     # parse the config
-    if config_file is not None:
-        for name, config in config_file.items():
+    if configuration is not None:
+        for name, config in configuration.items():
             if 'type' in config:
                 trigger = registry.lookup(config['type'])
                 trigger(name, **config)
