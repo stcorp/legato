@@ -19,7 +19,8 @@ setup(
         ],
     },
     install_requires=[
-        "watchdog",
-        "schedule"
+        "pyyaml",
+        "schedule",
+        "watchdog"
     ]
 )
