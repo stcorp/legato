@@ -1,5 +1,7 @@
 * Added --list to return a list of available tasks.
 
+* Add support for LEGATO_CONFIG_PATH environment variable.
+
 * Changed format to call python task.
 
 * Added support to run tasks manually.
