@@ -32,7 +32,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("config_file", help="The configuration file")
+    parser.add_argument("config_file", help="The configuration file", nargs='?')
     parser.add_argument("--verbose", help="Enable debug level logging")
 
     group = parser.add_mutually_exclusive_group()
@@ -43,6 +43,12 @@ def main():
                         nargs='?')
 
     args = parser.parse_args()
+
+    if args.config_file is None:
+        if "LEGATO_CONFIG_PATH" in os.environ:
+            args.config_file = os.environ["LEGATO_CONFIG_PATH"]
+        else:
+            parser.error("no legato configuration file specified")
 
     if args.task:
         run(args)

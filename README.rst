@@ -43,6 +43,9 @@ Start command
 
   $ legato configuration_file.yaml
 
+Instead of providing the configuration file as an argument you can also set
+the LEGATO_CONFIG_PATH environment variable to point to the file.
+
 Configuration file
 ------------------
 The configuration file follows the YAML format. The first entry is a unique
