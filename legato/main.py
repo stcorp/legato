@@ -9,7 +9,10 @@ from run import run_task
 def list_tasks(args):
     # Read the configuration
     config_file, _ = read_configuration_file(args.config_file)
-    print config_file.keys()
+    if config_file is None:
+        return
+    for key in sorted(config_file.keys()):
+        print key
 
 
 def run(args):
