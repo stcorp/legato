@@ -74,7 +74,7 @@ def restart():
     registry.stop()
     registry.join()
     try:
-        os.execvp("legato", sys.argv)
+        os.execvp(sys.argv[0], sys.argv)
     except Exception as e:
         print(e)
         sys.exit(1)

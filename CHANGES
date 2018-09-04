@@ -1,3 +1,5 @@
+* Fixed bug when starting legato without being on the PATH
+
 * Added --list to return a list of available tasks.
 
 * Add support for LEGATO_CONFIG_PATH environment variable.
