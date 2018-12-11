@@ -39,7 +39,7 @@ def main():
     parser.add_argument("--verbose", help="Enable debug level logging")
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--task", help="Trigger manually a legato task", nargs='?')
+    group.add_argument("--task", help="Trigger manually a legato task", nargs=1)
     group.add_argument("--list", help="List of tasks", action='store_true')
 
     parser.add_argument("--filename", help="Set filename for the action",
