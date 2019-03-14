@@ -11,8 +11,6 @@ logger = logging.getLogger(__name__)
 def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
     def run_parallel_task(what, run_shell=False):
         try:
-            clock = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            logger.info("{1} - Executing {0}".format(job_name, clock))
             if run_shell is True:
                 subprocess.Popen(what, shell=True, executable='/bin/sh', env=env)
             else:
@@ -22,8 +20,9 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
         except (AssertionError, subprocess.CalledProcessError) as e:
             logger.error("Failure running %s: %s" % (job_name, str(e)))
 
-    clock = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
-    env["DATETIME"] = clock
+    clock = datetime.now()
+    env["DATETIME"] = clock.strftime('%Y-%m-%dT%H:%M:%SZ')
+    logger.info("{1} - Executing {0}".format(job_name, clock.strftime('%Y-%m-%d %H:%M:%SZ')))
 
     if shell is not None:
         run_parallel_task(shell, True)
