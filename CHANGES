@@ -1,3 +1,6 @@
+1.1 2019-03-14
+~~~~~~~~~~~~~~
+
 * Fixed bug when starting legato without being on the PATH
 
 * Added --list to return a list of available tasks.

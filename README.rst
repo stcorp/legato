@@ -25,12 +25,12 @@ requires super user privileges.
 
 Using pip: ::
 
-  $ pip install legato-1.0.tar.gz
+  $ pip install legato-1.1.tar.gz
 
 Using setup.py: ::
 
-  $ tar zxf legato-1.0.tar.gz
-  $ cd legato-1.0
+  $ tar zxf legato-1.1.tar.gz
+  $ cd legato-1.1
   $ python setup.py install
 
 
@@ -147,6 +147,4 @@ Example configuration file
      type: time
      when: every 5 seconds
      python: legato.demo.echo_helloworld
-
-
 

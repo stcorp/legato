@@ -6,10 +6,10 @@ if sys.hexversion < 0x02070000:
 
 setup(
     name="legato",
-    version="1.0",
+    version="1.1",
     author="S[&]T",
     author_email="info@stcorp.nl",
-    url="http://stcorp.nl/",
+    url="https://stcorp.nl/",
     description="Task trigger daemon",
     license="BSD",
     packages=find_packages(),

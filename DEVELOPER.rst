@@ -21,13 +21,12 @@ Release procedure
 For the legato package:
 
 - Update version number in ``setup.py``
-- Update version number in ``README.rst``
 - Check the list of dependencies in the ``README.rst``
-- Check version numbers mentioned elsewhere in the ``README.rst``
+- Check version numbers legato mentioned in the ``README.rst``
 - Check the upgrade instructions in ``README.rst``
 - Add change history entry in ``CHANGES``
 - Check copyright header (year range) in all files.
-- Check that creation of the legatoe package using ``python setup.py sdist``
+- Check that creation of the legato package using ``python setup.py sdist``
   runs without errors.
 
 To create the legato package: ::
