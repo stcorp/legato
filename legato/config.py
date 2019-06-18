@@ -7,7 +7,7 @@ def read_configuration_file(configuration_file):
     list_of_paths.append(configuration_file)
 
     with open(configuration_file, 'r') as fh:
-        configuration = yaml.load(fh.read())
+        configuration = yaml.safe_load(fh.read())
 
     items = {}
     if configuration is not None:
