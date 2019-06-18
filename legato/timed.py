@@ -1,14 +1,14 @@
+from __future__ import absolute_import, division, print_function
 import threading
 import time
 import os
 from datetime import datetime
-
-from legato.registry import register
-from legato.run import run_task
+import logging
 
 import schedule
 
-import logging
+from .registry import register
+from .run import run_task
 
 _schedule = schedule.Scheduler()
 logging.getLogger('schedule').propagate = False

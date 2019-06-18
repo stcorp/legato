@@ -1,9 +1,11 @@
+from __future__ import absolute_import, division, print_function
 import argparse
 import os
 import datetime
-from daemon import main as daemon
-from config import read_configuration_file
-from run import run_task
+
+from .daemon import main as daemon
+from .config import read_configuration_file
+from .run import run_task
 
 
 def list_tasks(args):
@@ -12,7 +14,7 @@ def list_tasks(args):
     if config_file is None:
         return
     for key in sorted(config_file.keys()):
-        print key
+        print(key)
 
 
 def run(args):

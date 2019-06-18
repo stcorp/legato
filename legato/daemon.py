@@ -1,18 +1,19 @@
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 import sys
 import os
 import logging
+import time
 import signal
+
 from watchdog.observers import Observer
 from watchdog.events import *
 
-from legato import registry
-from legato.config import read_configuration_file
-import time
+from . import registry
+from .config import read_configuration_file
 
 # plugins
-import legato.timed
-import legato.filesystem
+from . import timed
+from . import filesystem
 
 
 class MonitorConfigFiles(PatternMatchingEventHandler):

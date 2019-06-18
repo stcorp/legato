@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function
 import os
 
 from watchdog.observers import Observer as FSObserver  # Auto-detect best fs event api according to OS
@@ -5,8 +6,8 @@ from watchdog.observers import Observer as PollingObserver
 from watchdog.events import *
 import fcntl
 
-from legato.registry import register
-from legato.run import run_task
+from .registry import register
+from .run import run_task
 
 
 class Observer():
