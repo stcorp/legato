@@ -1,9 +1,12 @@
 from __future__ import absolute_import, division, print_function
 import os
+import re
 
 from watchdog.observers import Observer as FSObserver  # Auto-detect best fs event api according to OS
 from watchdog.observers import Observer as PollingObserver
-from watchdog.events import *
+from watchdog.events import RegexMatchingEventHandler, FileSystemEventHandler
+from watchdog.events import EVENT_TYPE_CREATED, EVENT_TYPE_MODIFIED, EVENT_TYPE_DELETED, EVENT_TYPE_MOVED
+
 import fcntl
 
 from .registry import register
@@ -32,7 +35,11 @@ def join():
 
 @register('file', start, stop, join)
 def file_trigger(job_name, path, events, patterns, **kwargs):
-    class Handler(RegexMatchingEventHandler):
+    class Handler(FileSystemEventHandler):
+        def __init__(self, basepath, regexes=[r".*"]):
+            self._basepath = basepath
+            self._regexes = [re.compile(r) for r in regexes]
+
         @staticmethod
         def run_task(event_path):
             environment = os.environ
@@ -40,19 +47,21 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
             run_task(job_name, env=environment, **kwargs)
 
         def on_any_event(self, event):
-            if "unlocked" in events:
-                try:
-                    lock_file = open(event.src_path, 'r')
-                    fcntl.flock(lock_file, fcntl.LOCK_EX)
-                    lock_file.close()
-                except IOError:
-                    return
-            if event.event_type is EVENT_TYPE_CREATED:
-                if "create" in events and "modify" not in events:
-                    self.run_task(event.src_path)
-            if event.event_type is EVENT_TYPE_MODIFIED:
-                if "modify" in events:
-                    self.run_task(event.src_path)
+            relative_path = os.path.relpath(event.src_path, start=self._basepath)
+            if any(r.match(relative_path) for r in self._regexes):
+                if "unlocked" in events:
+                    try:
+                        lock_file = open(event.src_path, 'r')
+                        fcntl.flock(lock_file, fcntl.LOCK_EX)
+                        lock_file.close()
+                    except IOError:
+                        return
+                if event.event_type is EVENT_TYPE_CREATED:
+                    if "create" in events and "modify" not in events:
+                        self.run_task(event.src_path)
+                if event.event_type is EVENT_TYPE_MODIFIED:
+                    if "modify" in events:
+                        self.run_task(event.src_path)
 
     file_system = ''
     operating_system = os.uname()
@@ -65,4 +74,4 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
     else:
         _observer = Observer.polling_observer
 
-    _observer.schedule(Handler(regexes=patterns), path, recursive=True)
+    _observer.schedule(Handler(path, regexes=patterns), path, recursive=True)
