@@ -25,11 +25,12 @@ def read_configuration_file(configuration_file):
             elif os.path.isdir(include):
                 list_of_paths += [include]
                 for file_in_dir in os.listdir(include):
-                    filename = os.path.join(include, file_in_dir)
-                    extra_configuration, extra_paths = read_configuration_file(filename)
-                    if extra_configuration is not None:
-                        configuration.update(extra_configuration)
-                    list_of_paths += extra_paths
+                    if not file_in_dir[0] == '.':
+                        filename = os.path.join(include, file_in_dir)
+                        extra_configuration, extra_paths = read_configuration_file(filename)
+                        if extra_configuration is not None:
+                            configuration.update(extra_configuration)
+                        list_of_paths += extra_paths
             else:
                 raise IOError
 
