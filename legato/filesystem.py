@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 import os
 import re
+import logging
 
 from watchdog.observers import Observer as FSObserver  # Auto-detect best fs event api according to OS
 from watchdog.observers import Observer as PollingObserver
@@ -47,21 +48,26 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
             run_task(job_name, env=environment, **kwargs)
 
         def on_any_event(self, event):
-            relative_path = os.path.relpath(event.src_path, start=self._basepath)
-            if any(r.match(relative_path) for r in self._regexes):
-                if "unlocked" in events:
-                    try:
-                        lock_file = open(event.src_path, 'r')
-                        fcntl.flock(lock_file, fcntl.LOCK_EX)
-                        lock_file.close()
-                    except IOError:
-                        return
-                if event.event_type is EVENT_TYPE_CREATED:
-                    if "create" in events and "modify" not in events:
-                        self.run_task(event.src_path)
-                if event.event_type is EVENT_TYPE_MODIFIED:
-                    if "modify" in events:
-                        self.run_task(event.src_path)
+            try:
+                logging.debug('"%s" was %s' % (event.src_path, event.event_type))
+                relative_path = os.path.relpath(event.src_path, start=self._basepath)
+                if any(r.match(relative_path) for r in self._regexes):
+                    if "unlocked" in events:
+                        try:
+                            lock_file = open(event.src_path, 'r')
+                            fcntl.flock(lock_file, fcntl.LOCK_EX)
+                            lock_file.close()
+                        except IOError:
+                            return
+                    if event.event_type is EVENT_TYPE_CREATED:
+                        if "create" in events and "modify" not in events:
+                            self.run_task(event.src_path)
+                    if event.event_type is EVENT_TYPE_MODIFIED:
+                        if "modify" in events:
+                            self.run_task(event.src_path)
+            except Exception as e:
+                logging.exception(e)
+                raise e
 
     file_system = ''
     operating_system = os.uname()
