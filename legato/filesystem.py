@@ -54,9 +54,8 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                 if any(r.match(relative_path) for r in self._regexes):
                     if "unlocked" in events:
                         try:
-                            lock_file = open(event.src_path, 'r')
-                            fcntl.flock(lock_file, fcntl.LOCK_EX)
-                            lock_file.close()
+                            with open(event.src_path, 'r') as lock_file:
+                                fcntl.flock(lock_file, fcntl.LOCK_EX)
                         except IOError:
                             return
                     if event.event_type is EVENT_TYPE_CREATED:
