@@ -26,8 +26,8 @@ def run(args):
     except:
         raise Exception('Task \'{}\' cannot be found'.format(args.task))
 
-    # Set environment
-    environment = os.environ
+    # Set task-specific environment variables
+    environment = {}
     if task['type'] == 'file':
         environment["FILENAME"] = args.filename
 

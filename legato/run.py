@@ -11,13 +11,14 @@ logger = logging.getLogger(__name__)
 
 def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
     def run_parallel_task(what, run_shell=False):
+        environment = dict(os.environ).update(env)
         try:
             if run_shell is True:
-                subprocess.Popen(what, shell=True, executable='/bin/sh', env=env)
+                subprocess.Popen(what, shell=True, executable='/bin/sh', env=environment)
             else:
                 what = what.split()
                 program = what[0]
-                subprocess.Popen(what, shell=False, executable=program, env=env)
+                subprocess.Popen(what, shell=False, executable=program, env=environment)
         except (AssertionError, subprocess.CalledProcessError) as e:
             logger.error("Failure running %s: %s" % (job_name, str(e)))
 
@@ -41,7 +42,7 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
         try:
             module_import = import_module(module_name)
             python_function = getattr(module_import, function_name)
-            os.environ = env
+            os.environ.update(env)
             arguments = kwargs.pop('arguments', '')
             process = multiprocessing.Process(target=python_function, kwargs=arguments)
             process.start()
