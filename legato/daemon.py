@@ -74,8 +74,9 @@ def restart():
     print('Restarting due to change in configuration files')
     registry.stop()
     registry.join()
+    executable = os.environ.get('LEGATO', sys.argv[0])
     try:
-        os.execvp(sys.argv[0], sys.argv)
+        os.execvp(executable, sys.argv)
     except Exception as e:
         print(e)
         sys.exit(1)
