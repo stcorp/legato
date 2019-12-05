@@ -52,10 +52,16 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                 logging.debug('"%s" was %s' % (event.src_path, event.event_type))
                 relative_path = os.path.relpath(event.src_path, start=self._basepath)
                 if any(r.match(relative_path) for r in self._regexes):
-                    if "unlocked" in events:
+                    if "unlocked_flock" in events:
                         try:
                             with open(event.src_path, 'r') as lock_file:
                                 fcntl.flock(lock_file, fcntl.LOCK_EX)
+                        except IOError:
+                            return
+                    if "unlocked_lockf" in events:
+                        try:
+                            with open(event.src_path, 'w') as lock_file:
+                                fcntl.lockf(lock_file, fcntl.LOCK_EX)
                         except IOError:
                             return
                     if event.event_type is EVENT_TYPE_CREATED:

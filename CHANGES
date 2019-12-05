@@ -1,3 +1,6 @@
+* Split 'unlocked' event for file-based triggers into 'unlocked_flock' and
+  'unlocked_lockf' to support both flock and fcntl types of locks.
+
 1.1 2019-03-14
 ~~~~~~~~~~~~~~
 
