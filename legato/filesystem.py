@@ -52,6 +52,14 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                 logging.debug('"%s" was %s' % (event.src_path, event.event_type))
                 relative_path = os.path.relpath(event.src_path, start=self._basepath)
                 if any(r.match(relative_path) for r in self._regexes):
+                    if event.event_type is EVENT_TYPE_MODIFIED:
+                        if "modify" not in events:
+                            return
+                    elif event.event_type is EVENT_TYPE_CREATED:
+                        if "create" not in events or "modify" in events:
+                            return
+                    else:
+                        return
                     if "unlocked_flock" in events:
                         try:
                             with open(event.src_path, 'r') as lock_file:
@@ -60,16 +68,11 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                             return
                     if "unlocked_lockf" in events:
                         try:
-                            with open(event.src_path, 'a+') as lock_file:
+                            with open(event.src_path, 'rb+') as lock_file:
                                 fcntl.lockf(lock_file, fcntl.LOCK_EX)
                         except IOError:
                             return
-                    if event.event_type is EVENT_TYPE_CREATED:
-                        if "create" in events and "modify" not in events:
-                            self.run_task(event.src_path)
-                    if event.event_type is EVENT_TYPE_MODIFIED:
-                        if "modify" in events:
-                            self.run_task(event.src_path)
+                    self.run_task(event.src_path)
             except Exception as e:
                 logging.exception(e)
                 raise e
