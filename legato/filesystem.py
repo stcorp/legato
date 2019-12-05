@@ -60,7 +60,7 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                             return
                     if "unlocked_lockf" in events:
                         try:
-                            with open(event.src_path, 'w') as lock_file:
+                            with open(event.src_path, 'a+') as lock_file:
                                 fcntl.lockf(lock_file, fcntl.LOCK_EX)
                         except IOError:
                             return
