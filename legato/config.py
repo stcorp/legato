@@ -33,7 +33,6 @@ def read_configuration_file(configuration_file):
                             configuration.update(extra_configuration)
                         list_of_paths += extra_paths
             else:
-                print("include target '%s' does not exist" % include)
-                sys.exit(1)
+                raise IOError("include target '%s' does not exist" % include)
 
     return configuration, list_of_paths

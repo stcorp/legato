@@ -1,11 +1,14 @@
 from __future__ import absolute_import, division, print_function
 import argparse
+import logging
 import os
-import datetime
+import sys
 
 from .daemon import main as daemon
 from .config import read_configuration_file
 from .run import run_task
+
+logger = logging.getLogger(__name__)
 
 
 def list_tasks(args):
@@ -55,12 +58,16 @@ def main():
         else:
             parser.error("no legato configuration file specified")
 
-    if args.task:
-        run(args)
-    elif args.list:
-        list_tasks(args)
-    else:
-        daemon(args)
+    try:
+        if args.task:
+            run(args)
+        elif args.list:
+            list_tasks(args)
+        else:
+            daemon(args)
+    except Exception as e:
+        logger.error(e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
