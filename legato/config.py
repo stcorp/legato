@@ -34,6 +34,6 @@ def read_configuration_file(configuration_file):
                         list_of_paths += extra_paths
             else:
                 print("include target '%s' does not exist" % include)
-                sys.exit(-1)
+                sys.exit(1)
 
     return configuration, list_of_paths

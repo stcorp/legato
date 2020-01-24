@@ -105,4 +105,7 @@ def parse_when(when, scheduler):
 
 @register('time', start, stop, join)
 def timed_trigger(job_name, when, **kwargs):
-    parse_when(when, _schedule).do(run_task, job_name, **kwargs)
+    if not isinstance(when, list):
+        when = [when]
+    for when_term in when:
+        parse_when(when_term, _schedule).do(run_task, job_name, **kwargs)
