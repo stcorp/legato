@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 import yaml
 import os
+import sys
 
 
 def read_configuration_file(configuration_file):
@@ -32,6 +33,7 @@ def read_configuration_file(configuration_file):
                             configuration.update(extra_configuration)
                         list_of_paths += extra_paths
             else:
-                raise IOError
+                print("include target '%s' does not exist" % include)
+                sys.exit(-1)
 
     return configuration, list_of_paths
