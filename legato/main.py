@@ -14,7 +14,8 @@ def list_tasks(args):
     if config_file is None:
         return
     for key in sorted(config_file.keys()):
-        print(key)
+        if key not in ('include_file', 'include_dir'):
+            print(key)
 
 
 def run(args):
