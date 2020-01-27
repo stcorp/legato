@@ -1,5 +1,17 @@
+* Allow 'when' configuration parameter to be a list of time values.
+
+* 'include' entries in legato configuration files are now properly excluded
+  when using the --task and --list command line options.
+
+* Add support for LEGATO environment variable to explicitly specify legato
+  executable for restarting after config change.
+
 * Split 'unlocked' event for file-based triggers into 'unlocked_flock' and
   'unlocked_lockf' to support both flock and fcntl types of locks.
+
+* Ignore files starting with a '.' in included configuration directories.
+
+* File trigger 'patterns' are now matched to relative paths.
 
 1.1 2019-03-14
 ~~~~~~~~~~~~~~
