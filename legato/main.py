@@ -10,8 +10,6 @@ from .run import run_task
 
 logger = logging.getLogger(__name__)
 
-FAKE_TASKS = ('include_file', 'include_dir')
-
 
 def list_tasks(args):
     # Read the configuration
@@ -19,7 +17,7 @@ def list_tasks(args):
     if config_file is None:
         return
     for key in sorted(config_file.keys()):
-        if key not in FAKE_TASKS:
+        if 'include' not in config_file[key]:
             print(key)
 
 
@@ -27,13 +25,13 @@ def run(args):
     # Read the configuration
     config_file, _ = read_configuration_file(args.config_file)
 
-    if args.task in FAKE_TASKS:
-        raise Exception('Invalid task name: \'{}\''.format(args.task))
-
     try:
         task = config_file[args.task]
     except KeyError:
         raise Exception('Task \'{}\' cannot be found'.format(args.task))
+
+    if 'include' in task:
+        raise Exception('Task \'{}\' cannot be run'.format(args.task))
 
     # Set task-specific environment variables
     environment = {}
