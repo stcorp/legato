@@ -1,5 +1,7 @@
 * Allow 'when' configuration parameter to be a list of time values.
 
+* Allow triggering on 'movefrom', 'moveto', and 'delete' file events.
+
 * 'include' entries in legato configuration files are now properly excluded
   when using the --task and --list command line options.
 

@@ -45,48 +45,74 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
 
         @staticmethod
         def run_task(event_path):
-            environment = os.environ
-            environment["FILENAME"] = event_path
-            run_task(job_name, env=environment, **kwargs)
-
-        def on_any_event(self, event):
             try:
-                logger.debug('%s was %s' % (event.src_path, event.event_type))
-                relative_path = os.path.relpath(event.src_path, start=self._basepath)
-                if any(r.match(relative_path) for r in self._regexes):
-                    if event.event_type is EVENT_TYPE_MODIFIED:
-                        if "modify" not in events:
-                            return
-                    elif event.event_type is EVENT_TYPE_CREATED:
-                        if "create" not in events:
-                            return
-                    else:
-                        return
-                    if "unlocked_flock" in events:
-                        try:
-                            with open(event.src_path, 'r') as lock_file:
-                                fcntl.flock(lock_file, fcntl.LOCK_EX)
-                        except IOError:
-                            logger.debug('%s is locked' % (event.src_path,))
-                            return
-                    if "unlocked_lockf" in events:
-                        try:
-                            with open(event.src_path, 'rb+') as lock_file:
-                                fcntl.lockf(lock_file, fcntl.LOCK_EX)
-                        except IOError:
-                            logger.debug('%s is locked' % (event.src_path,))
-                            return
-                    self.run_task(event.src_path)
+                environment = os.environ
+                environment["FILENAME"] = event_path
+                run_task(job_name, env=environment, **kwargs)
             except Exception as e:
                 logger.exception(e)
                 raise e
+
+        def should_wait_for_unlock(self, path):
+            if "unlocked_flock" in events:
+                try:
+                    with open(path, 'r') as lock_file:
+                        fcntl.flock(lock_file, fcntl.LOCK_EX)
+                except IOError:
+                    logger.debug('%s is locked' % (event.src_path,))
+                    return True
+            if "unlocked_lockf" in events:
+                try:
+                    with open(path, 'rb+') as lock_file:
+                        fcntl.lockf(lock_file, fcntl.LOCK_EX)
+                except IOError:
+                    logger.debug('%s is locked' % (event.src_path,))
+                    return True
+            return False
+
+        def on_created(self, event):
+            if "create" in events:
+                logger.debug('%s was created' % event.src_path)
+                relative_path = os.path.relpath(event.src_path, start=self._basepath)
+                if any(r.match(relative_path) for r in self._regexes):
+                    if self.should_wait_for_unlock(event.src_path):
+                        return
+                    self.run_task(event.src_path)
+
+        def on_deleted(self, event):
+            if "delete" in events:
+                logger.debug('%s was deleted' % event.src_path)
+                relative_path = os.path.relpath(event.src_path, start=self._basepath)
+                if any(r.match(relative_path) for r in self._regexes):
+                    self.run_task(event.src_path)
+
+        def on_modified(self, event):
+            if "modify" in events:
+                logger.debug('%s was modified' % event.src_path)
+                relative_path = os.path.relpath(event.src_path, start=self._basepath)
+                if any(r.match(relative_path) for r in self._regexes):
+                    if self.should_wait_for_unlock(event.src_path):
+                        return
+                    self.run_task(event.src_path)
+
+        def on_moved(self, event):
+            if "movefrom" in events or "moveto" in events:
+                logger.debug('%s was moved to %s' % (event.src_path, event.dest_path))
+                if "movefrom" in events:
+                    relative_path = os.path.relpath(event.src_path, start=self._basepath)
+                    if any(r.match(relative_path) for r in self._regexes):
+                        self.run_task(event.src_path)
+                if "moveto" in events:
+                    relative_path = os.path.relpath(event.dest_path, start=self._basepath)
+                    if any(r.match(relative_path) for r in self._regexes):
+                        self.run_task(event.dest_path)
 
     file_system = ''
     operating_system = os.uname()
     if 'Linux' in operating_system:
         file_system = os.popen('stat -f -c %%T -- %s' % path).read()
 
-    # If the file type if ext2/3/4 use i-notify, else use the polling mechanism
+    # If the file type is ext2/3/4 use i-notify, else use the polling mechanism
     if file_system.startswith('ext'):
         _observer = Observer.inotify_observer
     else:

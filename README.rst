@@ -63,12 +63,13 @@ The task configuration is defined by:
   "every 30 seconds"
 
 - ``events``: Applies when the type is set to ``file``. It is a list with file
-  events that should be used to trigger on. Supported events are ``modify``
-  and ``create``. Optionally it can be complemented with ``unlocked_flock`` or
+  events that should be used to trigger on. Supported events are ``modify``,
+  ``create``, ``delete``, ``movefrom``, and ``moveto``.
+  Optionally it can be complemented with ``unlocked_flock`` or
   ``unlocked_lockf`` (only on Linux and macOS). If an unlocked attribute is
-  specified the event will only happen once the file is unlocked (using
-  flock or fcntl respectively). Write permission on the file is needed to use
-  ``unlocked_lockf``
+  specified then event triggers for ``create`` and ``modify`` will only happen
+  once the file is unlocked (using flock or fcntl respectively). Write
+  permission on the file is needed to use ``unlocked_lockf``
 
 - ``path``: Applies when the type is set to ``file``. It describes the
   directory to monitor
@@ -115,7 +116,7 @@ Example configuration file
 
    echo_filesystem:
      type: file
-     events: ["modify", "create"]
+     events: ["modify", "create", "movefrom"]
      path: /tmp/test/
      patterns:
        - '.*\.(json|py)'
