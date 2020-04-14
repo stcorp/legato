@@ -59,14 +59,14 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                     with open(path, 'r') as lock_file:
                         fcntl.flock(lock_file, fcntl.LOCK_EX)
                 except IOError:
-                    logger.debug('%s is locked' % (event.src_path,))
+                    logger.debug('%s is locked' % (path,))
                     return True
             if "unlocked_lockf" in events:
                 try:
                     with open(path, 'rb+') as lock_file:
                         fcntl.lockf(lock_file, fcntl.LOCK_EX)
                 except IOError:
-                    logger.debug('%s is locked' % (event.src_path,))
+                    logger.debug('%s is locked' % (path,))
                     return True
             return False
 
