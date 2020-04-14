@@ -13,6 +13,7 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
     job_reference = job_name
     if "FILENAME" in env:
         job_reference += " for " + env["FILENAME"]
+
     def run_parallel_task(what, run_shell=False):
         environment = dict(os.environ).update(env)
         try:

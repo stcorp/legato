@@ -85,5 +85,5 @@ def restart():
 def shutdown(*args, **kwargs):
     sys.exit()
 
-signal.signal(signal.SIGINT, shutdown)
 
+signal.signal(signal.SIGINT, shutdown)
