@@ -58,7 +58,7 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                         if "modify" not in events:
                             return
                     elif event.event_type is EVENT_TYPE_CREATED:
-                        if "create" not in events or "modify" in events:
+                        if "create" not in events:
                             return
                     else:
                         return
