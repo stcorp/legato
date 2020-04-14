@@ -45,7 +45,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("config_file", help="The configuration file", nargs='?')
-    parser.add_argument("--verbose", help="Enable debug level logging")
+    parser.add_argument("--verbose", help="Enable debug level logging", action='store_true', default=False)
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--task", help="Trigger manually a legato task")

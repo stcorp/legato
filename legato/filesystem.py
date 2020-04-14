@@ -13,6 +13,8 @@ import fcntl
 from .registry import register
 from .run import run_task
 
+logger = logging.getLogger(__name__)
+
 
 class Observer():
     polling_observer = PollingObserver()
@@ -49,7 +51,7 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
 
         def on_any_event(self, event):
             try:
-                logging.debug('"%s" was %s' % (event.src_path, event.event_type))
+                logger.debug('%s was %s' % (event.src_path, event.event_type))
                 relative_path = os.path.relpath(event.src_path, start=self._basepath)
                 if any(r.match(relative_path) for r in self._regexes):
                     if event.event_type is EVENT_TYPE_MODIFIED:
@@ -65,16 +67,18 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                             with open(event.src_path, 'r') as lock_file:
                                 fcntl.flock(lock_file, fcntl.LOCK_EX)
                         except IOError:
+                            logger.debug('%s is locked' % (event.src_path,))
                             return
                     if "unlocked_lockf" in events:
                         try:
                             with open(event.src_path, 'rb+') as lock_file:
                                 fcntl.lockf(lock_file, fcntl.LOCK_EX)
                         except IOError:
+                            logger.debug('%s is locked' % (event.src_path,))
                             return
                     self.run_task(event.src_path)
             except Exception as e:
-                logging.exception(e)
+                logger.exception(e)
                 raise e
 
     file_system = ''

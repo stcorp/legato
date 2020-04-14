@@ -23,11 +23,11 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
                 program = what[0]
                 subprocess.Popen(what, shell=False, executable=program, env=environment)
         except (AssertionError, subprocess.CalledProcessError) as e:
-            logger.error("Failure running %s: %s" % (job_reference, str(e)))
+            logger.error("failure running %s: %s" % (job_reference, str(e)))
 
     clock = datetime.now()
     env["DATETIME"] = clock.strftime('%Y-%m-%dT%H:%M:%SZ')
-    logger.info("{1} - Executing {0}".format(job_reference, clock.strftime('%Y-%m-%d %H:%M:%SZ')))
+    logger.info("{0} - executing {1}".format(clock.strftime('%Y-%m-%d %H:%M:%SZ'), job_reference))
 
     if shell is not None:
         run_parallel_task(shell, True)
