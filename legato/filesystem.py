@@ -45,6 +45,7 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
 
         @staticmethod
         def run_task(event_path):
+            logger.debug('running task %s for %s' % (job_name, event_path))
             try:
                 environment = os.environ
                 environment["FILENAME"] = event_path
@@ -56,17 +57,23 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
         def should_wait_for_unlock(self, path):
             if "unlocked_flock" in events:
                 try:
+                    logger.debug('trying to open %s (flock)' % path)
                     with open(path, 'r') as lock_file:
+                        logger.debug('trying to acquire lock')
                         fcntl.flock(lock_file, fcntl.LOCK_EX)
-                except IOError:
-                    logger.debug('%s is locked' % (path,))
+                        logger.debug('lock acquired')
+                except IOError as e:
+                    logger.debug('%s is locked (%d)' % (path, e.errno))
                     return True
             if "unlocked_lockf" in events:
                 try:
+                    logger.debug('trying to open %s (lockf)' % path)
                     with open(path, 'rb+') as lock_file:
+                        logger.debug('trying to acquire lock')
                         fcntl.lockf(lock_file, fcntl.LOCK_EX)
-                except IOError:
-                    logger.debug('%s is locked' % (path,))
+                        logger.debug('lock acquired')
+                except OSError as e:
+                    logger.debug('%s is locked (%d)' % (path, e.errno))
                     return True
             return False
 
