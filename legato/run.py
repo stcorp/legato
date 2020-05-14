@@ -48,7 +48,12 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
             python_function = getattr(module_import, function_name)
             os.environ.update(env)
             arguments = kwargs.pop('arguments', '')
-            process = multiprocessing.Process(target=python_function, kwargs=arguments)
+            def wrapper_function():
+                try:
+                    python_function(**arguments)
+                except Exception as e:
+                    logger.error(e)
+            process = multiprocessing.Process(target=wrapper_function)
             process.start()
         except Exception as e:
             logger.error(e)
