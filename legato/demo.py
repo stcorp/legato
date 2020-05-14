@@ -8,3 +8,7 @@ def echo(text_one, text_two):
 
 def echo_helloworld():
     print('Hello world')
+
+
+def error(**kwargs):
+    assert False, "Some error occurred: " + str(kwargs)
