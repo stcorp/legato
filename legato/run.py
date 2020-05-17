@@ -47,7 +47,7 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
             module_import = import_module(module_name)
             python_function = getattr(module_import, function_name)
             os.environ.update(env)
-            arguments = kwargs.pop('arguments', '')
+            arguments = kwargs.pop('arguments', {})
             def wrapper_function():
                 try:
                     python_function(**arguments)
