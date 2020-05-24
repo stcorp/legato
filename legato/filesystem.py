@@ -4,7 +4,7 @@ import re
 import logging
 
 from watchdog.observers import Observer as FSObserver  # Auto-detect best fs event api according to OS
-from watchdog.observers import Observer as PollingObserver
+from watchdog.observers.polling import PollingObserver
 from watchdog.events import RegexMatchingEventHandler, FileSystemEventHandler
 from watchdog.events import EVENT_TYPE_CREATED, EVENT_TYPE_MODIFIED, EVENT_TYPE_DELETED, EVENT_TYPE_MOVED
 
@@ -18,22 +18,22 @@ logger = logging.getLogger(__name__)
 
 class Observer():
     polling_observer = PollingObserver()
-    inotify_observer = FSObserver()
+    default_observer = FSObserver()
 
 
 def start():
     Observer.polling_observer.start()
-    Observer.inotify_observer.start()
+    Observer.default_observer.start()
 
 
 def stop():
     Observer.polling_observer.stop()
-    Observer.inotify_observer.stop()
+    Observer.default_observer.stop()
 
 
 def join():
     Observer.polling_observer.join()
-    Observer.inotify_observer.join()
+    Observer.default_observer.join()
 
 
 @register('file', start, stop, join)
@@ -114,15 +114,16 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
                     if any(r.match(relative_path) for r in self._regexes):
                         self.run_task(event.dest_path)
 
-    file_system = ''
     operating_system = os.uname()
     if 'Linux' in operating_system:
         file_system = os.popen('stat -f -c %%T -- %s' % path).read()
 
-    # If the file type is ext2/3/4 use i-notify, else use the polling mechanism
-    if file_system.startswith('ext'):
-        _observer = Observer.inotify_observer
+        # If the file type is ext2/3/4 use i-notify, else use the polling mechanism
+        if file_system.startswith('ext'):
+            _observer = Observer.default_observer
+        else:
+            _observer = Observer.polling_observer
     else:
-        _observer = Observer.polling_observer
+        _observer = Observer.default_observer
 
     _observer.schedule(Handler(path, regexes=patterns), path, recursive=True)
