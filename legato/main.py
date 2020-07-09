@@ -1,8 +1,10 @@
+#!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
 import argparse
 import logging
 import os
 import sys
+import traceback
 
 from .daemon import main as daemon
 from .config import read_configuration_file
@@ -53,6 +55,8 @@ def main():
 
     parser.add_argument("--filename", help="Set filename for the action")
 
+    parser.add_argument("--workers", type=int, default=1, help="Number of worker processes (default 1)")
+
     args = parser.parse_args()
 
     if args.config_file is None:
@@ -68,8 +72,8 @@ def main():
             list_tasks(args)
         else:
             daemon(args)
-    except Exception as e:
-        logger.error(e)
+    except Exception:
+        logger.error(traceback.format_exc())
         sys.exit(1)
 
 

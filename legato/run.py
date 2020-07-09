@@ -5,6 +5,7 @@ import multiprocessing
 import os
 from importlib import import_module
 from datetime import datetime
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -18,11 +19,12 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
         environment = dict(os.environ).update(env)
         try:
             if run_shell is True:
-                subprocess.Popen(what, shell=True, executable='/bin/sh', env=environment)
+                process = subprocess.Popen(what, shell=True, executable='/bin/sh', env=environment)
             else:
                 what = what.split()
                 program = what[0]
-                subprocess.Popen(what, shell=False, executable=program, env=environment)
+                process = subprocess.Popen(what, shell=False, executable=program, env=environment)
+            process.wait()
         except (AssertionError, subprocess.CalledProcessError) as e:
             logger.error("failure running %s: %s" % (job_reference, str(e)))
 
@@ -51,9 +53,10 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
             def wrapper_function():
                 try:
                     python_function(**arguments)
-                except Exception as e:
-                    logger.error(e)
+                except Exception:
+                    logger.error(traceback.format_exc())
             process = multiprocessing.Process(target=wrapper_function)
             process.start()
-        except Exception as e:
-            logger.error(e)
+            process.join()
+        except Exception:
+            logger.error(traceback.format_exc())

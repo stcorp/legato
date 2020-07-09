@@ -4,6 +4,7 @@ import time
 import os
 from datetime import datetime
 import logging
+import traceback
 
 import schedule
 
@@ -35,8 +36,8 @@ class Timer(threading.Thread):
                     self.finished.wait(self._schedule.idle_seconds)
                 else:
                     self.finished.wait(60)
-            except Exception as e:
-                logger.warning(e)
+            except Exception:
+                logger.warning(traceback.format_exc())
 
 
 def start():
@@ -103,9 +104,13 @@ def parse_when(when, scheduler):
     return interval
 
 
+def queue_task(job_name, task_queue, **kwargs):
+    task_queue.put((job_name, {}, kwargs))
+
+
 @register('time', start, stop, join)
-def timed_trigger(job_name, when, **kwargs):
+def timed_trigger(job_name, task_queue, when, **kwargs):
     if not isinstance(when, list):
         when = [when]
     for when_term in when:
-        parse_when(when_term, _schedule).do(run_task, job_name, **kwargs)
+        parse_when(when_term, _schedule).do(queue_task, job_name, task_queue, **kwargs)

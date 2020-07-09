@@ -37,7 +37,7 @@ def join():
 
 
 @register('file', start, stop, join)
-def file_trigger(job_name, path, events, patterns, **kwargs):
+def file_trigger(job_name, task_queue, path, events, patterns, **kwargs):
     class Handler(FileSystemEventHandler):
         def __init__(self, basepath, regexes=[r".*"]):
             self._basepath = basepath
@@ -46,13 +46,11 @@ def file_trigger(job_name, path, events, patterns, **kwargs):
         @staticmethod
         def run_task(event_path):
             logger.debug('running task %s for %s' % (job_name, event_path))
-            try:
-                environment = os.environ
-                environment["FILENAME"] = event_path
-                run_task(job_name, env=environment, **kwargs)
-            except Exception as e:
-                logger.exception(e)
-                raise e
+
+            environment = os.environ
+            environment["FILENAME"] = event_path
+
+            task_queue.put((job_name, dict(environment), kwargs))
 
         def should_wait_for_unlock(self, path):
             if "unlocked_flock" in events:

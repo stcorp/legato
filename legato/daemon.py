@@ -2,7 +2,9 @@ from __future__ import absolute_import, division, print_function
 import sys
 import os
 import logging
+from multiprocessing import Process, Queue
 import time
+import traceback
 import signal
 
 from watchdog.observers import Observer
@@ -10,6 +12,7 @@ from watchdog.events import *
 
 from . import registry
 from .config import read_configuration_file
+from .run import run_task
 
 # plugins
 from . import timed
@@ -21,7 +24,7 @@ class MonitorConfigFiles(PatternMatchingEventHandler):
         restart()
 
 
-def run(args):
+def run(args, task_queue):
     # Read the configuration
     configuration, list_of_paths = read_configuration_file(args.config_file)
     # Monitor configuration files
@@ -42,11 +45,18 @@ def run(args):
     if configuration is not None:
         for name, config in configuration.items():
             if 'type' in config:
-                trigger = registry.lookup(config['type'])
-                trigger(name, **config)
+                type_ = config.pop('type')
+                trigger = registry.lookup(type_)
+                trigger(name, task_queue, **config)
 
         # run the config
         registry.start()
+
+
+def worker_main(task_queue):
+    while True:
+        job_name, env, kwargs = task_queue.get()
+        run_task(job_name, env=env, **kwargs)
 
 
 def main(args):
@@ -62,8 +72,14 @@ def main(args):
     root.setLevel(level)
     root.addHandler(handler)
 
+    # setup worker pool, task queue
+    task_queue = Queue()
+    for i in range(args.workers):
+        process = Process(target=worker_main, args=(task_queue,))
+        process.start()
+
     # run the command
-    run(args)
+    run(args, task_queue)
 
     # Prevent main thread to finish
     while True:
@@ -77,8 +93,8 @@ def restart():
     executable = os.environ.get('LEGATO', sys.argv[0])
     try:
         os.execvp(executable, sys.argv)
-    except Exception as e:
-        print(e)
+    except Exception:
+        traceback.print_exc()
         sys.exit(1)
 
 
