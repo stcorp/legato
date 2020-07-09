@@ -1,6 +1,5 @@
 Legato
 ======
-
 Legato is a daemon that schedules tasks to be performed at specific times or
 due to a change in a file or directory. The tasks, which are executed in
 different threads, can be specified as shell scripts, a program or a call to a
@@ -150,3 +149,13 @@ Example configuration file
      when: every 5 seconds
      python: legato.demo.echo_helloworld
 
+
+Command-line arguments
+----------------------
+Positional arguments:
+
+- ``config_file``: The configuration file.
+
+Optional arguments:
+
+- ``workers`` Number of worker processes (default 1).
