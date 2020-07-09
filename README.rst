@@ -83,6 +83,10 @@ The task configuration is defined by:
 - ``python``:  The python function with arguments to be called.
   The function needs to be provided as full module path to that function.
 
+In case of ``file`` monitoring, the respective file name for an event is passed
+to the external command or Python function via an environment variable named
+``FILENAME``.
+
 
 Example configuration file
 --------------------------
@@ -158,4 +162,7 @@ Positional arguments:
 
 Optional arguments:
 
+- ``task``: Manually trigger the specified task.
+- ``filename`` Specify file name when using ``task`` and ``file`` monitoring.
+- ``list``: List all tasks in the configuration file.
 - ``workers`` Number of worker processes (default 1).
