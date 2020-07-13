@@ -2,8 +2,8 @@ Legato
 ======
 Legato is a daemon that schedules tasks to be performed at specific times or
 due to a change in a file or directory. The tasks, which are executed in
-different threads, can be specified as shell scripts, a program or a call to a
-python function.
+separate sub-processes, can be specified as shell scripts, a program or a
+call to a Python function.
 
 In music performance and notation, legato [leˈɡaːto] indicates that musical
 notes are played or sung smoothly and connected. That is, the player makes a
@@ -16,6 +16,10 @@ To be able to use legato, you will need:
 
 - A Unix-based operating system (e.g. Linux).
 - Python version 2.7 or higher.
+- Dependencies:
+  - pyyaml
+  - schedule
+  - watchdog
 
 Legato is distributed as a source distribution. It can be installed in several
 ways, for example, using pip or by invoking setup.py manually.
@@ -80,8 +84,9 @@ The task configuration is defined by:
 
 - ``cmd``:  The external program with arguments to be executed
 
-- ``python``:  The python function with arguments to be called.
-  The function needs to be provided as full module path to that function.
+- ``python``:  The Python function to be called, in the form of a full 
+  module path. An optional sub-attribute ``arguments`` contains arguments to
+  be passed to the function.
 
 In case of ``file`` monitoring, the respective file name for an event is passed
 to the external command or Python function via an environment variable named
@@ -163,6 +168,7 @@ Positional arguments:
 Optional arguments:
 
 - ``task``: Manually trigger the specified task.
-- ``filename`` Specify file name when using ``task`` and ``file`` monitoring.
-- ``list``: List all tasks in the configuration file.
+- ``filename`` Specify file name when using the ``task`` argument with ``file``
+  monitoring.
+- ``list``: List all tasks.
 - ``workers`` Number of worker processes (default 1).
