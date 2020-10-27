@@ -28,12 +28,12 @@ requires super user privileges.
 
 Using pip: ::
 
-  $ pip install legato-1.1.tar.gz
+  $ pip install legato-1.2.tar.gz
 
 Using setup.py: ::
 
-  $ tar zxf legato-1.1.tar.gz
-  $ cd legato-1.1
+  $ tar zxf legato-1.2.tar.gz
+  $ cd legato-1.2
   $ python setup.py install
 
 
@@ -84,7 +84,7 @@ The task configuration is defined by:
 
 - ``cmd``:  The external program with arguments to be executed
 
-- ``python``:  The Python function to be called, in the form of a full 
+- ``python``:  The Python function to be called, in the form of a full
   module path. An optional sub-attribute ``arguments`` contains arguments to
   be passed to the function.
 

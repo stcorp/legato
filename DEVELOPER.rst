@@ -22,7 +22,7 @@ For the legato package:
 
 - Update version number in ``setup.py``
 - Check the list of dependencies in the ``README.rst``
-- Check version numbers legato mentioned in the ``README.rst``
+- Check version numbers of legato mentioned in the ``README.rst``
 - Check the upgrade instructions in ``README.rst``
 - Add change history entry in ``CHANGES``
 - Check copyright header (year range) in all files.

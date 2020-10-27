@@ -1,3 +1,6 @@
+1.2 2020-10-27
+~~~~~~~~~~~~~~
+
 * Allow 'when' configuration parameter to be a list of time values.
 
 * Allow triggering on 'movefrom', 'moveto', and 'delete' file events.
@@ -14,6 +17,9 @@
 * Ignore files starting with a '.' in included configuration directories.
 
 * File trigger 'patterns' are now matched to relative paths.
+
+* Fixed multiprocessing/multithreading issue that could result in tasks not
+  being executed.
 
 1.1 2019-03-14
 ~~~~~~~~~~~~~~
