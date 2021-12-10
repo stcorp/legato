@@ -16,7 +16,8 @@ def run_task(job_name, shell=None, cmd=None, python=None, env={}, **kwargs):
         job_reference += " for " + env["FILENAME"]
 
     def run_parallel_task(what, run_shell=False):
-        environment = dict(os.environ).update(env)
+        environment = dict(os.environ)
+        environment.update(env)
         try:
             if run_shell is True:
                 process = subprocess.Popen(what, shell=True, executable='/bin/sh', env=environment)
