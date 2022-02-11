@@ -20,7 +20,12 @@ from . import filesystem
 
 
 class MonitorConfigFiles(PatternMatchingEventHandler):
+    def __init__(self, observer, *args, **kwargs):
+        super(MonitorConfigFiles, self).__init__(*args, **kwargs)
+        self.observer = observer
+
     def on_any_event(self, event):
+        self.observer.stop()
         restart()
 
 
@@ -32,11 +37,11 @@ def run(args, task_queue):
     for path_to_monitor in list_of_paths:
         if os.path.isdir(path_to_monitor):
             # create monitor for any change in the directory
-            handler = MonitorConfigFiles()
+            handler = MonitorConfigFiles(observer)
             path = os.path.realpath(path_to_monitor)
         else:
             # create monitor on directory with specific pattern for config file
-            handler = MonitorConfigFiles([os.path.realpath(path_to_monitor)])
+            handler = MonitorConfigFiles(observer, [os.path.realpath(path_to_monitor)])
             path = os.path.dirname(os.path.realpath(path_to_monitor))
         observer.schedule(handler, path, recursive=False)
     observer.start()
