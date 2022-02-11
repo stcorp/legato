@@ -92,7 +92,8 @@ def main(args):
 
 
 def restart():
-    print('Restarting due to change in configuration files')
+    logger = logging.getLogger()
+    logger.critical('Restarting due to change in configuration files')
     registry.stop()
     registry.join()
     executable = os.environ.get('LEGATO', sys.argv[0])
