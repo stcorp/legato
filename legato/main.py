@@ -38,7 +38,9 @@ def run(args):
     # Set task-specific environment variables
     environment = {}
     if task['type'] == 'file':
-        environment["FILENAME"] = args.filename
+        if args.filename is None:
+            raise Exception("filename parameter required for task " + args.task)
+        environment["FILENAME"] = os.path.abspath(args.filename)
 
     run_task(args.task, env=environment, **task)
 
