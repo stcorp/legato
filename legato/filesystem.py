@@ -114,7 +114,8 @@ def file_trigger(job_name, task_queue, path, events, patterns, **kwargs):
 
     operating_system = os.uname()
     if 'Linux' in operating_system:
-        file_system = os.popen('stat -f -c %%T -- %s' % path).read()
+        with os.popen('stat -f -c %%T -- %s' % path) as pipe:
+            file_system = pipe.read()
 
         # If the file type is ext2/3/4 use i-notify, else use the polling mechanism
         if file_system.startswith('ext'):
