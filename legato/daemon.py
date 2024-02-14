@@ -24,7 +24,7 @@ class MonitorConfigFiles(PatternMatchingEventHandler):
         super(MonitorConfigFiles, self).__init__(*args, **kwargs)
         self.observer = observer
 
-    def on_any_event(self, event):
+    def on_modified(self, event):
         self.observer.stop()
         restart()
 
