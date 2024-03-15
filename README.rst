@@ -28,12 +28,12 @@ requires super user privileges.
 
 Using pip: ::
 
-  $ pip install legato-1.2.1.tar.gz
+  $ pip install legato-1.3.1.tar.gz
 
 Using setup.py: ::
 
-  $ tar zxf legato-1.2.1.tar.gz
-  $ cd legato-1.2.1
+  $ tar zxf legato-1.3.1.tar.gz
+  $ cd legato-1.3.1
   $ python setup.py install
 
 

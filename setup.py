@@ -6,7 +6,7 @@ if sys.hexversion < 0x02070000:
 
 setup(
     name="legato",
-    version="1.3",
+    version="1.3.1",
     author="S[&]T",
     url="https://github.com/stcorp/legato",
     description="Task trigger daemon",
