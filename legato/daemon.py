@@ -41,7 +41,7 @@ def run(args, task_queue):
             path = os.path.realpath(path_to_monitor)
         else:
             # create monitor on directory with specific pattern for config file
-            handler = MonitorConfigFiles(observer, [os.path.realpath(path_to_monitor)])
+            handler = MonitorConfigFiles(observer, patterns=[os.path.realpath(path_to_monitor)])
             path = os.path.dirname(os.path.realpath(path_to_monitor))
         observer.schedule(handler, path, recursive=False)
     observer.start()
