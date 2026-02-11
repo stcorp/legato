@@ -63,7 +63,7 @@ The task configuration is defined by:
 
 - ``when``: Applies when the type is set to ``time``. The values can be
   provided in human readable form. For example: "every monday at 17:02" or
-  "every 30 seconds"
+  "every 30 seconds". It can be a single value or a list of values.
 
 - ``events``: Applies when the type is set to ``file``. It is a list with file
   events that should be used to trigger on. Supported events are ``modify``,
@@ -105,7 +105,9 @@ Example configuration file
 
    echo_something:
      type: time
-     when: every monday at 17:02
+     when:
+       - every monday at 17:00
+       - every wednesday at 10:00
      shell: |
        echo "Something"
 
